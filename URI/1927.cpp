@@ -15,8 +15,6 @@ bool validate(position ori, position dest){
     return (abs(ori.x - dest.x)+abs(ori.y - dest.y) <= (dest.t-ori.t));
 }
 
-int dp[2000];
-
 int main(){
     int n, aux, c = 0;
     vector<position> pos;
