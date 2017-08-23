@@ -1,43 +1,47 @@
-#include <bits/stdc++.h>
 using namespace std;
+#include <bits/stdc++.h>
+#define debug(x) cout << #x " = " << (x) << endl
+#define endl '\n'
+#define pb push_back
+typedef long long int ll;
+typedef vector<int> vi;
+typedef pair<int,int> pii;
 
-struct position{
-  int x;
-  int y;
-  int t;
-};
+int dx[] = {1,0,-1,0,0};
+int dy[] = {0,1,0,-1,0};
+int dp[21][21][1001];
+int trufa[21][21][1001];
 
-bool comp(position a, position b){
-    return (a.t < b.t);
+bool validate(int x, int y, int t){
+    return (x < 0 || y < 0 || x > 20 || y > 20 || t > 1000) ? 0 : 1;
 }
 
-bool validate(position ori, position dest){
-    return (abs(ori.x - dest.x)+abs(ori.y - dest.y) <= (dest.t-ori.t));
+int solve(int x, int y, int t){
+    if(dp[x][y][t]==-1){
+        int ans = 0;
+        for (int i = 0; i < 5; i++) {
+            if(validate(x+dx[i],y+dy[i],t+1)){
+                ans = max(ans,solve(x+dx[i],y+dy[i],t+1));
+            }
+        }
+        ans += trufa[x][y][t];
+        dp[x][y][t] = ans;
+        return ans;
+    }
+    else{
+        return dp[x][y][t];
+    }
 }
 
 int main(){
-    int n, aux, c = 0;
-    vector<position> pos;
-    position a;
-    a.x = 6;
-    a.y = 6;
-    a.t = 0;
-    pos.push_back(a);
+    int n,x,y,t;
     cin>>n;
-    aux = n;
-    memset(dp, 0, sizeof dp);
-    while(aux--){
-        cin>>a.x>>a.y>>a.t;
-        pos.push_back(a);
+    memset(trufa, 0, sizeof trufa);
+    memset(dp, -1, sizeof dp);
+    while(n--){
+        cin>>x>>y>>t;
+        trufa[x][y][t]++;
     }
-    sort(pos.begin(),pos.end(),comp);
-    a = pos[0];
-    for (int i = 0; i < n; i++) {
-        if(validate(a,pos[i+1])){ 
-            c++;
-            a = pos[i+1];
-        }
-    }
-    cout<<c;
+    cout<<solve(6,6,0);
     return 0;
 }
